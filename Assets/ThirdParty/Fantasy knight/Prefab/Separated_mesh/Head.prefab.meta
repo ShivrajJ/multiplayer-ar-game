@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6e1b47e032278274ba1b95775daefe1e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/Head.prefab
+  uploadId: 642948

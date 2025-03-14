@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a21b7f48f10623c47977805e0d311de3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Materials/Mat_Body.mat
+  uploadId: 642948

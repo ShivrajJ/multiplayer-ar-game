@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b9672c408f4fe204a8e640a81c71ff4b
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/Legs_Separate.prefab
+  uploadId: 642948

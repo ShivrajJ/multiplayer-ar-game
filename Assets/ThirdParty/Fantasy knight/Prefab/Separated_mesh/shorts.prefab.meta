@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b4236c863efbd3c41924e8935b10f36e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/shorts.prefab
+  uploadId: 642948

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6abeed541f2193941b3b38435de85b3d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Shield.prefab
+  uploadId: 642948

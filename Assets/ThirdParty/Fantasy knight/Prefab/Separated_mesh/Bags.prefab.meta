@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9eb1ef6db1100cc4aabeb01a22292a27
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/Bags.prefab
+  uploadId: 642948

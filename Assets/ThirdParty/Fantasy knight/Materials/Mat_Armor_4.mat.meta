@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e2fa23d0a5433bd4f9cbb810cb26a984
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Materials/Mat_Armor_4.mat
+  uploadId: 642948

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2984bc1f341b086499053add0df55913
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/Gloves.prefab
+  uploadId: 642948
