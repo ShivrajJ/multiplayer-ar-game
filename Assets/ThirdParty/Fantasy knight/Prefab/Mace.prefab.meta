@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: aa8522de51c0a8d4eab62f3656e008d0
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Mace.prefab
+  uploadId: 642948

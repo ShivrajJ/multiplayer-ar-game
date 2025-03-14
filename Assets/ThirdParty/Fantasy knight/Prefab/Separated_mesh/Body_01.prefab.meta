@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d3dc725b6d47d7248ae345beaa472ba5
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276754
+  packageName: A modular Fantasy knight character
+  packageVersion: 1.0
+  assetPath: Assets/Fantasy knight/Prefab/Separated_mesh/Body_01.prefab
+  uploadId: 642948
