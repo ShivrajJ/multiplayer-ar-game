@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -34,14 +35,22 @@ public class SpawnObjectOnTap : MonoBehaviour
 
         if (arRaycastManager.Raycast(finger.currentTouch.screenPosition, hits, TrackableType.PlaneWithinPolygon))
         {
-            foreach (ARRaycastHit hit in hits)
+            int closestHitIndex = -1;
+            for (int hitIndex = 0; hitIndex < hits.Count; hitIndex++)
             {
                 // If the plane is a horizontal plane facing up (ground)
-                if (arPlaneManager.GetPlane(hit.trackableId).alignment == PlaneAlignment.HorizontalUp)
+                if (arPlaneManager.GetPlane(hits[hitIndex].trackableId).alignment == PlaneAlignment.HorizontalUp)
                 {
-                    Pose pose = hit.pose;
-                    Instantiate(prefab, pose.position, pose.rotation);
+                    if (closestHitIndex == -1 || hits[hitIndex].distance < hits[closestHitIndex].distance)
+                    {
+                        closestHitIndex = hitIndex;
+                    }
                 }
+            }
+            if (closestHitIndex != -1)
+            {
+                Pose pose = hits[closestHitIndex].pose;
+                Instantiate(prefab, pose.position, pose.rotation);
             }
         }
     }

@@ -17,6 +17,7 @@
     "com.unity.toolchain.linux-x86_64": "2.0.10",
     "com.unity.ugui": "2.0.0",
     "com.unity.visualscripting": "1.9.4",
+    "com.unity.xr-content.xr-sim-environments": "file:../ContentPackages/com.unity.xr-content.xr-sim-environments-2.0.1.tgz",
     "com.unity.xr.arcore": "6.0.5",
     "com.unity.xr.arfoundation": "6.0.5",
     "com.unity.xr.management": "4.5.0",
