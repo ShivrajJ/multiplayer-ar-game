@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Start Screen.unity
+    guid: a3ab35b5da71c6d2a9063a07bdc3df74
+  - enabled: 1
+    path: Assets/Scenes/Shivraj/AI Test Scene.unity
+    guid: 76c1a2a2ea9555ebe90974a2cb6fd101
+  - enabled: 1
     path: Assets/Scenes/Shivraj/Test.unity
     guid: c722e8e420dd3ce768144671cb05a4af
   m_configObjects:
