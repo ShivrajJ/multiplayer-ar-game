@@ -2,7 +2,6 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class TroopController : NetworkBehaviour
@@ -46,14 +45,38 @@ public class TroopController : NetworkBehaviour
         {
             InitializeAI();
             navAgent.enabled = true;
+            _troop.health.onDeath += OnDeath;
         }
 
         _homePosition = transform.position;
     }
 
+    private void OnDeath(Boolean isDead)
+    {
+        // Stop all actions
+        switch (currentState)
+        {
+            case AIState.Idle:
+                break;
+            case AIState.Chasing:
+                StopChasing();
+                break;
+            case AIState.Retreating:
+                StopRetreating();
+                break;
+            case AIState.Attacking:
+                StopAttacking();
+                break;
+        }
+
+        navAgent.isStopped = true;
+        navAgent.enabled = false;
+    }
+
     private void Update()
     {
         if (!IsOwner) return;
+        if (_troop.IsDead) return;
         switch (currentState)
         {
             case AIState.Idle:
