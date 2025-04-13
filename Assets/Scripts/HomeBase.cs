@@ -4,6 +4,7 @@ public class HomeBase : NetworkBehaviour
 {
     public Health health;
     public NetworkVariable<float> gold = new(100f);
+    public NetworkVariable<float> income = new(10f);
     public Team team;
 
     public override void OnNetworkSpawn()

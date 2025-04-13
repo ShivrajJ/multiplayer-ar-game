@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
-using Quaternion = UnityEngine.Quaternion;
-using Vector3 = UnityEngine.Vector3;
 
 public class GameManager : NetworkBehaviour
 {
@@ -18,6 +14,8 @@ public class GameManager : NetworkBehaviour
     public NetworkVariable<float> universalScale = new NetworkVariable<float>(0.3f);
     public Team team;
     private Team _losingTeam;
+    private float _timeSinceLastIncome;
+    private float _incomeTimeSeconds = 2f;
 
     private void Awake()
     {
@@ -116,5 +114,28 @@ public class GameManager : NetworkBehaviour
     {
         _losingTeam = homeBase.team;
         currentGameState.Value = GameState.GameOver;
+    }
+
+    private void Update()
+    {
+        if (!IsServer) return;
+        if (currentGameState.Value == GameState.InProgress)
+        {
+            _timeSinceLastIncome += Time.deltaTime;
+            if (_timeSinceLastIncome >= _incomeTimeSeconds)
+            {
+                AddCoins();
+                _timeSinceLastIncome = 0f;
+            }
+        }
+    }
+
+    private void AddCoins()
+    {
+        HomeBase redBase = HomeBases[Team.Red];
+        HomeBase blueBase = HomeBases[Team.Blue];
+
+        redBase.gold.Value += redBase.income.Value;
+        blueBase.gold.Value += blueBase.income.Value;
     }
 }
