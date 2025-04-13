@@ -6,18 +6,30 @@ using UnityEngine;
 [RequireComponent(typeof(TroopController))]
 public class Troop : NetworkBehaviour
 {
-    private TroopData _data;
+    private int _dataIndex;
+
+    public int DataIndex
+    {
+        get => _dataIndex;
+        set
+        {
+            _dataIndex = value;
+            Data = TroopManager.Instance.AvailableTroops[_dataIndex];
+        }
+    }
 
     public TroopData Data
     {
-        get => _data;
-        set
+        get
         {
-            if (IsServer)
+            if (_data is null)
             {
-                _data = value;
+                _data = TroopManager.Instance.AvailableTroops[_dataIndex];
             }
+
+            return _data;
         }
+        set => _data = value;
     }
 
     [Header("Settings")] [SerializeField] private float attackDamage = 5.0f;
@@ -34,6 +46,7 @@ public class Troop : NetworkBehaviour
 
     public Boolean IsDead => health.IsDead;
     private TroopController _controller;
+    private TroopData _data;
 
     private void Awake()
     {
@@ -59,7 +72,7 @@ public class Troop : NetworkBehaviour
         if (!IsServer) return;
         // Add gold to enemy base
         GameManager.Instance.HomeBases[team == Team.Red ? Team.Blue : Team.Red].gold.Value +=
-            _data.price * killRewardRatio;
+            Data.price * killRewardRatio;
         // Play death animation
         // Remove from list of troops
         TroopManager.Instance.OnTroopDeath(this);

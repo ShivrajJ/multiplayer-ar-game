@@ -22,6 +22,8 @@ public class TroopManager : NetworkBehaviour
     private Team team => GameManager.Instance?.team ?? Team.Red;
     private Coroutine spawningCoroutine;
 
+    public List<TroopData> AvailableTroops => availableTroops; // Public access to the available troops
+
     public AIMode CurrentMode // Current mode of the troops
     {
         get => currentMode;
@@ -132,12 +134,13 @@ public class TroopManager : NetworkBehaviour
         ulong clientId)
     {
         Debug.Log("Spawning troop...");
-        SpawnTroop(availableTroops[troopIndex], clientTeam, position, rotation, clientId);
+        SpawnTroop(troopIndex, clientTeam, position, rotation, clientId);
     }
 
-    private void SpawnTroop(TroopData troopData, Team clientTeam, Vector3 position, Quaternion rotation, ulong clientId)
+    private void SpawnTroop(int troopIndex, Team clientTeam, Vector3 position, Quaternion rotation, ulong clientId)
     {
         if (!IsServer) return;
+        TroopData troopData = AvailableTroops[troopIndex];
         GameObject prefab = troopData.prefab;
         // Instantiate a new troop
         GameObject newTroop = Instantiate(prefab, position, rotation);
@@ -145,7 +148,8 @@ public class TroopManager : NetworkBehaviour
         newTroop.transform.localScale = Vector3.one * GameManager.Instance.universalScale.Value;
         Troop troop = newTroop.GetComponent<Troop>();
         troop.team = clientTeam;
-        troop.Data = troopData;
+        troop.DataIndex = troopIndex;
+        // troop.Data = troopData; // Automatically set by setting index
         NetworkObject newTroopNetworkObject = newTroop.GetComponent<NetworkObject>();
         newTroopNetworkObject.SpawnWithOwnership(clientId);
         // Add the new troop to the list of troops
