@@ -153,6 +153,8 @@ MonoBehaviour:
   health: {fileID: 3995759082661697809}
   gold:
     m_InternalValue: 100
+  income:
+    m_InternalValue: 10
   team: 0
 --- !u!114 &3995759082661697809
 MonoBehaviour:
@@ -181,7 +183,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_Extents: {x: 0.00001, y: 0.00001, z: 0.00001}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1

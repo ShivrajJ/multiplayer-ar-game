@@ -58,14 +58,6 @@ public class GameManager : NetworkBehaviour
                 break;
             case GameState.InProgress:
                 TroopManager.Instance.SpawnTroop(0, HomeBases[team].transform);
-                // Enable plane detection
-                // planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
-                // WRAP IN COROUTINE (so it can be done over time)
-                // find first plane
-                // Spawn Home Bases
-                // Disable plane detection
-                // planeManager.requestedDetectionMode = PlaneDetectionMode.None;
-                // END COROUTINE
                 break;
             case GameState.GameOver:
                 // Show Game Over screen, show "victory" and "defeat" text
