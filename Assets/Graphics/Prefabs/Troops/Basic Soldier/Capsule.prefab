@@ -286,8 +286,10 @@ MonoBehaviour:
   attackDamage: 5
   attackRange: 0.6
   attackCooldown: 1
-  team: 0
+  deathTimeSeconds: 5
+  killRewardRatio: 0.5
   health: {fileID: 7894637201293256589}
+  team: 0
 --- !u!195 &9031264867743915124
 NavMeshAgent:
   m_ObjectHideFlags: 0

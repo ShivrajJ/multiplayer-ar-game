@@ -1,6 +1,5 @@
 using System;
 using Unity.Netcode;
-using UnityEngine;
 
 public class Health : NetworkBehaviour
 {
@@ -8,6 +7,7 @@ public class Health : NetworkBehaviour
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100f);
 
     public Action<Boolean> onDeath;
+    public Boolean IsDead => health.Value <= 0;
 
     private void TakeDamage(float damage)
     {
