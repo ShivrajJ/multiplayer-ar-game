@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34580f2bca417b20c916aa6f391f7981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: AI Test Scene
+  sceneToLoad: Test
   networkManagerPrefab: {fileID: 3368812264403187977, guid: 59f3cea2981f5bb0c9bddee1255e3395, type: 3}
   networkDetailsPanel: {fileID: 1075852414}
   ipInputField: {fileID: 560466909}

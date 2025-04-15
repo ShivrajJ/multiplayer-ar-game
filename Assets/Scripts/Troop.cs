@@ -65,7 +65,7 @@ public class Troop : NetworkBehaviour
 
         if (IsOwner)
         {
-            team = GameManager.Instance.team;
+            team = GameManager.Instance.localTeam;
             TroopManager.Instance.AddTroop(this);
         }
         else

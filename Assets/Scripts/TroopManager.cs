@@ -18,8 +18,8 @@ public class TroopManager : NetworkBehaviour
     // List of all the available troop prefabs
     [SerializeField] private List<TroopData> availableTroops;
     [SerializeField] private AIMode currentMode;
-    [SerializeField] private List<Troop> troops = new List<Troop>(); // Local list of player's troops
-    private Team team => GameManager.Instance?.team ?? Team.Red;
+    private List<Troop> troops = new List<Troop>(); // Local list of player's troops
+    private Team team => GameManager.Instance?.localTeam ?? Team.Red;
     private Coroutine spawningCoroutine;
 
     public List<TroopData> AvailableTroops => availableTroops; // Public access to the available troops

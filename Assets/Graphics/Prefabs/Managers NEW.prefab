@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3918414316749289939}
   - component: {fileID: 2519930247712033099}
-  - component: {fileID: 3995897974559130837}
   - component: {fileID: 174433493501169217}
+  - component: {fileID: 4972338514097058871}
   m_Layer: 0
-  m_Name: Managers
+  m_Name: Managers NEW
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1224819020
+  GlobalObjectIdHash: 694242210
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -59,27 +59,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &3995897974559130837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4950518754508563099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1da634bb8dc53aa668afbdfb0c9c309c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  mapPrefab: {fileID: 6439780016617594850, guid: 59e61677d3534cfbdae6e49e1b75d0fb, type: 3}
-  raycastManager: {fileID: 0}
-  planeManager: {fileID: 0}
-  currentGameState:
-    m_InternalValue: 0
-  universalScale:
-    m_InternalValue: 0.3
-  team: 0
 --- !u!114 &174433493501169217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,3 +75,25 @@ MonoBehaviour:
   availableTroops:
   - {fileID: 11400000, guid: 761e1c67e1da12d208cf064914c42dee, type: 2}
   currentMode: 0
+--- !u!114 &4972338514097058871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4950518754508563099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da634bb8dc53aa668afbdfb0c9c309c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerPrefab: {fileID: 2353649463938992751, guid: 0775f3fa1c322b382b4f5e96e91c285d, type: 3}
+  networkAnchorPrefab: {fileID: 7265044756126653312, guid: d506b61574f6a96299a6cda5ee46a9cd, type: 3}
+  arPlacementManager: {fileID: 0}
+  networkGameState:
+    m_InternalValue: 0
+  universalScale:
+    m_InternalValue: 0.3
+  localTeam: 0
+  _localGameState: 0
