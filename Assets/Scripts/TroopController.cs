@@ -28,6 +28,7 @@ public class TroopController : NetworkBehaviour
     private Troop _troop;
     private readonly Collider[] _detectedEnemies = new Collider[10];
     private Health _currentTarget;
+    private Animator _animator;
     private Boolean _chasingHomeBase;
     private Vector3 _homePosition;
     private float _lastAttackTime;
@@ -37,6 +38,7 @@ public class TroopController : NetworkBehaviour
     private void Awake()
     {
         _troop = GetComponent<Troop>();
+        _animator = GetComponent<Animator>();
     }
 
     public override void OnNetworkSpawn()
@@ -108,11 +110,14 @@ public class TroopController : NetworkBehaviour
     private void HandleIdleDefense()
     {
         // Patrol around home position
+        _animator.SetBool("Walk", true);
         if (navAgent.remainingDistance < 0.25f)
         {
             Vector3 randomPoint = _homePosition + Random.insideUnitSphere * defenseRadius;
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
                 navAgent.SetDestination(hit.position);
+            }
         }
 
         DetectEnemies();
@@ -127,6 +132,8 @@ public class TroopController : NetworkBehaviour
     {
         currentState = AIState.Chasing;
         navAgent.isStopped = false;
+        _animator.SetBool("Walk", false);
+        _animator.SetBool("Run", true);
     }
 
     private void HandleChasing()
@@ -167,10 +174,13 @@ public class TroopController : NetworkBehaviour
     private void StopChasing()
     {
         currentState = AIState.Idle;
+        _animator.SetBool("Run", false);
     }
 
     private void StartAttacking()
     {
+        _animator.SetBool("Run", false);
+        _animator.SetBool("Walk", false);
         currentState = AIState.Attacking;
         navAgent.isStopped = true;
     }
@@ -240,8 +250,13 @@ public class TroopController : NetworkBehaviour
         // Deal damage if cooldown has passed
         if (Time.time - _lastAttackTime >= _troop.AttackCooldown)
         {
+            _animator.SetBool("Attack", true);
             enemy.TakeDamageServerRpc(_troop.AttackDamage);
             _lastAttackTime = Time.time;
+        }
+        else
+        {
+            _animator.SetBool("Attack", false);
         }
     }
 
