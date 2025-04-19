@@ -332,7 +332,8 @@ MonoBehaviour:
   planeManager: {fileID: 0}
   currentGameState:
     m_InternalValue: 0
-  universalScale: 0.3
+  universalScale:
+    m_InternalValue: 0.3
   team: 0
 --- !u!114 &883602245
 MonoBehaviour:
@@ -348,7 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   availableTroops:
-  - {fileID: 11400000, guid: 761e1c67e1da12d208cf064914c42dee, type: 2}
+  - {fileID: 11400000, guid: c2c4d4584dc395ac9bb5e30d06f99809, type: 2}
   currentMode: 0
 --- !u!1001 &1084068168
 PrefabInstance:

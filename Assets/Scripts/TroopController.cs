@@ -250,13 +250,9 @@ public class TroopController : NetworkBehaviour
         // Deal damage if cooldown has passed
         if (Time.time - _lastAttackTime >= _troop.AttackCooldown)
         {
-            _animator.SetBool("Attack", true);
+            _animator.SetTrigger("Attack 0");
             enemy.TakeDamageServerRpc(_troop.AttackDamage);
             _lastAttackTime = Time.time;
-        }
-        else
-        {
-            _animator.SetBool("Attack", false);
         }
     }
 

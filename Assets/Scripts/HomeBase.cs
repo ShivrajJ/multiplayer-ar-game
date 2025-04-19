@@ -3,7 +3,7 @@ using Unity.Netcode;
 public class HomeBase : NetworkBehaviour
 {
     public Health health;
-    public NetworkVariable<float> gold = new();
+    public NetworkVariable<float> gold = new(100f);
     public Team team;
 
     public override void OnNetworkSpawn()
