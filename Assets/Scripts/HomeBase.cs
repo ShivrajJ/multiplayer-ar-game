@@ -61,6 +61,9 @@ public class HomeBase : NetworkBehaviour
             Transform homeBasePoint = team == Team.Red ? map.redHomeBasePoint : map.blueHomeBasePoint;
             transform.localPosition = homeBasePoint.position;
             transform.localRotation = homeBasePoint.rotation;
+            GetComponent<NetworkObjectParenting>()
+                .SetInitialPoseServerRpc(transform.localPosition,
+                    transform.localRotation);
         }
 
         GameManager.Instance.RegisterHomeBase(this);

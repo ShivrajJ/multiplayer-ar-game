@@ -64,7 +64,7 @@ public class NetworkObjectParenting : NetworkBehaviour
     private void TryParentAndPosition()
     {
         // Don't run if position is already set or if this is the server (server doesn't have a *local* anchor)
-        if (initialPositionSet || IsServer) return;
+        if (initialPositionSet || !IsOwner) return;
 
         // Find the local map anchor reference from the GameManager
         Transform networkAnchor = GameManager.Instance?.NetworkAnchorObject.transform;
@@ -78,8 +78,8 @@ public class NetworkObjectParenting : NetworkBehaviour
             NetworkObject.TrySetParent(networkAnchor, false); // false = keep local orientation
 
             // Set the local position and rotation based on the synced NetworkVariables
-            // transform.localPosition = initialLocalPosition.Value;
-            // transform.localRotation = initialLocalRotation.Value;
+            transform.localPosition = initialLocalPosition.Value;
+            transform.localRotation = initialLocalRotation.Value;
 
             Debug.Log(
                 $"NetworkObjectParenting ({gameObject.name}): Set localPosition to {transform.localPosition}, localRotation to {transform.localRotation.eulerAngles}");
