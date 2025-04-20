@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -7,6 +8,10 @@ using Random = UnityEngine.Random;
 
 public class TroopController : NetworkBehaviour
 {
+    private static readonly int Run = Animator.StringToHash("Run");
+    private static readonly int Walk = Animator.StringToHash("Walk");
+    private static readonly int Property = Animator.StringToHash("Attack 0");
+
     public enum AIState
     {
         Idle,
@@ -28,7 +33,7 @@ public class TroopController : NetworkBehaviour
     private Troop _troop;
     private readonly Collider[] _detectedEnemies = new Collider[10];
     private Health _currentTarget;
-    private Animator _animator;
+    private NetworkAnimator _networkAnimator;
     private Boolean _chasingHomeBase;
     private Vector3 _homePosition;
     private float _lastAttackTime;
@@ -38,7 +43,7 @@ public class TroopController : NetworkBehaviour
     private void Awake()
     {
         _troop = GetComponent<Troop>();
-        _animator = GetComponent<Animator>();
+        _networkAnimator = GetComponent<NetworkAnimator>();
     }
 
     public override void OnNetworkSpawn()
@@ -110,7 +115,7 @@ public class TroopController : NetworkBehaviour
     private void HandleIdleDefense()
     {
         // Patrol around home position
-        _animator.SetBool("Walk", true);
+        _networkAnimator.Animator.SetBool(Walk, true);
         if (navAgent.remainingDistance < 0.25f)
         {
             Vector3 randomPoint = _homePosition + Random.insideUnitSphere * defenseRadius;
@@ -132,8 +137,8 @@ public class TroopController : NetworkBehaviour
     {
         currentState = AIState.Chasing;
         navAgent.isStopped = false;
-        _animator.SetBool("Walk", false);
-        _animator.SetBool("Run", true);
+        _networkAnimator.Animator.SetBool(Walk, false);
+        _networkAnimator.Animator.SetBool(Run, true);
     }
 
     private void HandleChasing()
@@ -174,13 +179,13 @@ public class TroopController : NetworkBehaviour
     private void StopChasing()
     {
         currentState = AIState.Idle;
-        _animator.SetBool("Run", false);
+        _networkAnimator.Animator.SetBool(Run, false);
     }
 
     private void StartAttacking()
     {
-        _animator.SetBool("Run", false);
-        _animator.SetBool("Walk", false);
+        _networkAnimator.Animator.SetBool(Run, false);
+        _networkAnimator.Animator.SetBool(Walk, false);
         currentState = AIState.Attacking;
         navAgent.isStopped = true;
     }
@@ -250,7 +255,7 @@ public class TroopController : NetworkBehaviour
         // Deal damage if cooldown has passed
         if (Time.time - _lastAttackTime >= _troop.AttackCooldown)
         {
-            _animator.SetTrigger("Attack 0");
+            _networkAnimator.SetTrigger(Property);
             enemy.TakeDamageServerRpc(_troop.AttackDamage);
             _lastAttackTime = Time.time;
         }
