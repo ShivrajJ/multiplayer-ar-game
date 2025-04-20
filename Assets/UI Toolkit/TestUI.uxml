@@ -1,8 +1,8 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <engine:VisualElement style="flex-grow: 1; justify-content: center; align-content: flex-end; align-items: flex-end; flex-direction: row; align-self: flex-end; height: 100%; width: 100%; flex-shrink: 1; flex-basis: auto; position: absolute;">
         <engine:GroupBox style="flex-direction: row;">
-            <engine:Button text="Defend" style="align-self: center; justify-content: flex-end; align-content: flex-end; align-items: center; bottom: 0;" />
-            <engine:Button text="Attack" style="align-self: center; justify-content: flex-end; align-content: flex-end; align-items: center; bottom: 0;" />
+            <engine:Button text="Defend" name="defendButton" style="align-self: center; justify-content: flex-end; align-content: flex-end; align-items: center; bottom: 0;" />
+            <engine:Button text="Attack" name="attackButton" style="align-self: center; justify-content: flex-end; align-content: flex-end; align-items: center; bottom: 0;" />
         </engine:GroupBox>
     </engine:VisualElement>
 </engine:UXML>

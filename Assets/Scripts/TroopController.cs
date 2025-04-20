@@ -9,7 +9,7 @@ public class TroopController : NetworkBehaviour
 {
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int Walk = Animator.StringToHash("Walk");
-    private static readonly int Property = Animator.StringToHash("Attack 0");
+    private static readonly int Attack = Animator.StringToHash("Attack 0");
 
     public enum AIState
     {
@@ -85,11 +85,26 @@ public class TroopController : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (_troop.IsDead) return;
-        if (navAgent.remainingDistance < 0.15f)
+        if (navAgent.remainingDistance == 0f)
         {
             navAgent.ResetPath();
             _networkAnimator.Animator.SetBool(Walk, false);
             _networkAnimator.Animator.SetBool(Run, false);
+        }
+        else
+        {
+            switch (currentState)
+            {
+                case AIState.Idle:
+                    _networkAnimator.Animator.SetBool(Walk, true);
+                    _networkAnimator.Animator.SetBool(Run, false);
+                    break;
+                case AIState.Chasing:
+                case AIState.Retreating:
+                    _networkAnimator.Animator.SetBool(Walk, false);
+                    _networkAnimator.Animator.SetBool(Run, true);
+                    break;
+            }
         }
 
         if (Time.time - _lastAIUpdateTime < updateInterval) return;
@@ -115,6 +130,10 @@ public class TroopController : NetworkBehaviour
     {
         ClearEnemy(false);
         currentState = AIState.Retreating;
+        navAgent.enabled = true;
+        navAgent.isStopped = false;
+        _networkAnimator.ResetTrigger(Attack);
+        _networkAnimator.Animator.SetBool(Run, true);
         navAgent.SetDestination(_homePosition);
     }
 
@@ -123,6 +142,11 @@ public class TroopController : NetworkBehaviour
         if (navAgent.remainingDistance < 0.15f)
         {
             StopRetreating();
+        }
+
+        if (CurrentMode == TroopManager.AIMode.Attack)
+        {
+            DetectEnemies();
         }
     }
 
@@ -297,7 +321,7 @@ public class TroopController : NetworkBehaviour
         // Deal damage if cooldown has passed
         if (Time.time - _lastAttackTime >= _troop.AttackCooldown)
         {
-            _networkAnimator.SetTrigger(Property);
+            _networkAnimator.SetTrigger(Attack);
             enemy.TakeDamageServerRpc(_troop.AttackDamage);
             _lastAttackTime = Time.time;
         }

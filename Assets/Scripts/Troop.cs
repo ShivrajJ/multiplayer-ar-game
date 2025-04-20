@@ -46,7 +46,7 @@ public class Troop : NetworkBehaviour
     [Header("Properties")] public Health health;
     public Team team;
 
-    public Boolean IsDead => health.IsDead;
+    public Boolean IsDead => health.isDead;
     private TroopController _controller;
     private TroopData _data;
 

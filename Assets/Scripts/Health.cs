@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using UnityEngine.Serialization;
 
 public class Health : NetworkBehaviour
 {
@@ -7,11 +8,11 @@ public class Health : NetworkBehaviour
     public NetworkVariable<float> maxHealth = new NetworkVariable<float>(100f);
 
     public Action<Boolean> onDeath;
-    public Boolean IsDead => health.Value <= 0;
+    public bool isDead = false;
 
     private void TakeDamage(float damage)
     {
-        if (!IsServer || IsDead) return;
+        if (!IsServer || isDead) return;
         health.Value -= damage;
         if (health.Value <= 0)
         {
@@ -34,6 +35,7 @@ public class Health : NetworkBehaviour
 
     private void Die()
     {
+        isDead = true;
         onDeath?.Invoke(true);
     }
 }
