@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5100399305323280135}
   - component: {fileID: 4708554786850368653}
   - component: {fileID: 3995759082661697809}
+  - component: {fileID: -5973282488541201858}
   m_Layer: 3
   m_Name: HomeBase
   m_TagString: Untagged
@@ -151,7 +152,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   health: {fileID: 3995759082661697809}
   gold:
-    m_InternalValue: 0
+    m_InternalValue: 100
   team: 0
 --- !u!114 &3995759082661697809
 MonoBehaviour:
@@ -170,3 +171,19 @@ MonoBehaviour:
     m_InternalValue: 100
   maxHealth:
     m_InternalValue: 100
+--- !u!208 &-5973282488541201858
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2353649463938992751}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

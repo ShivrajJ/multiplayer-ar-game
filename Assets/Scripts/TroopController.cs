@@ -3,7 +3,6 @@ using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class TroopController : NetworkBehaviour
@@ -38,7 +37,7 @@ public class TroopController : NetworkBehaviour
     private Vector3 _homePosition;
     private float _lastAttackTime;
 
-    private TroopManager.AIMode CurrentMode => TroopManager.Instance?.CurrentMode ?? TroopManager.AIMode.Attack;
+    private TroopManager.AIMode CurrentMode => TroopManager.Instance?.CurrentMode ?? TroopManager.AIMode.Defend;
 
     private void Awake()
     {
@@ -49,18 +48,41 @@ public class TroopController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        _homePosition = transform.position;
         if (IsOwner)
         {
             InitializeAI();
             navAgent.enabled = true;
+            _troop.health.onDeath += OnDeath;
+        }
+    }
+
+    private void OnDeath(Boolean isDead)
+    {
+        // Stop all actions
+        switch (currentState)
+        {
+            case AIState.Idle:
+                break;
+            case AIState.Chasing:
+                StopChasing();
+                break;
+            case AIState.Retreating:
+                StopRetreating();
+                break;
+            case AIState.Attacking:
+                StopAttacking();
+                break;
         }
 
-        _homePosition = transform.position;
+        navAgent.isStopped = true;
+        navAgent.enabled = false;
     }
 
     private void Update()
     {
         if (!IsOwner) return;
+        if (_troop.IsDead) return;
         switch (currentState)
         {
             case AIState.Idle:
@@ -172,7 +194,7 @@ public class TroopController : NetworkBehaviour
             return;
         }
 
-        navAgent.SetDestination(_currentTarget.transform.position);
+        SetClosestDestination(_currentTarget.transform.position);
         DetectEnemies();
     }
 
@@ -266,9 +288,14 @@ public class TroopController : NetworkBehaviour
         if (CurrentMode == TroopManager.AIMode.Defend)
         {
             Vector3 randomPoint = _homePosition + Random.insideUnitSphere * defenseRadius;
-            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
-                navAgent.SetDestination(hit.position);
+            SetClosestDestination(randomPoint);
         }
+    }
+
+    private void SetClosestDestination(Vector3 targetPoint, float maxDistance = 2f)
+    {
+        if (NavMesh.SamplePosition(targetPoint, out NavMeshHit hit, maxDistance, NavMesh.AllAreas))
+            navAgent.SetDestination(hit.position);
     }
 
     private void SetEnemy(Health enemy)
