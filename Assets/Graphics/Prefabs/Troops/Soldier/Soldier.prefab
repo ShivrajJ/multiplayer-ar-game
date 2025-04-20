@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 84edae3880672254c918fbb1acdf70e4, type: 3}
       propertyPath: m_Name
-      value: Paladin WProp J Nordstrom@Sword And Shield Death 1
+      value: Soldier
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 84edae3880672254c918fbb1acdf70e4, type: 3}
       propertyPath: m_Layer
@@ -75,9 +75,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 84edae3880672254c918fbb1acdf70e4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7786987291468673314}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 84edae3880672254c918fbb1acdf70e4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5870344936990280141}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 84edae3880672254c918fbb1acdf70e4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8553531466632285553}
@@ -130,18 +127,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5870344936990280141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3171671805837602089}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bb38080d24271342b0bb2ca19542b2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8553531466632285553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,9 +169,11 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 8
+  updateInterval: 0.5
   navAgent: {fileID: -5676021345552005291}
-  defenseRadius: 2
+  defenseRadius: 3
   currentState: 0
+  _currentTarget: {fileID: 0}
 --- !u!114 &6627160783371136085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,10 +188,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   attackDamage: 10
-  attackRange: 0.6
+  attackRange: 1
   attackCooldown: 1
-  team: 0
+  deathTimeSeconds: 5
+  killRewardRatio: 0.5
   health: {fileID: -7553313490490415637}
+  team: 0
 --- !u!114 &-7553313490490415637
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,12 +11,12 @@ public class Health : NetworkBehaviour
 
     private void TakeDamage(float damage)
     {
-        if (!IsServer) return;
+        if (!IsServer || IsDead) return;
         health.Value -= damage;
         if (health.Value <= 0)
         {
             health.Value = 0;
-            Die();
+            DieClientRpc();
         }
     }
 
@@ -26,7 +26,13 @@ public class Health : NetworkBehaviour
         TakeDamage(damage);
     }
 
-    public void Die()
+    [ClientRpc(RequireOwnership = false)]
+    private void DieClientRpc()
+    {
+        Die();
+    }
+
+    private void Die()
     {
         onDeath?.Invoke(true);
     }
