@@ -1,11 +1,16 @@
 using System;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class TroopController : NetworkBehaviour
 {
+    private static readonly int Run = Animator.StringToHash("Run");
+    private static readonly int Walk = Animator.StringToHash("Walk");
+    private static readonly int Attack = Animator.StringToHash("Attack");
+
     public enum AIState
     {
         Idle,
@@ -16,6 +21,7 @@ public class TroopController : NetworkBehaviour
 
     [Header("Settings")] [SerializeField] private float detectionRange = 5f;
     [SerializeField] private LayerMask enemyLayerMask;
+    [SerializeField] private float updateInterval = 0.5f;
 
     [Header("Navigation")] [SerializeField]
     private NavMeshAgent navAgent;
@@ -26,16 +32,19 @@ public class TroopController : NetworkBehaviour
 
     private Troop _troop;
     private readonly Collider[] _detectedEnemies = new Collider[10];
-    private Health _currentTarget;
+    [SerializeField] private Health _currentTarget;
+    private NetworkAnimator _networkAnimator;
     private Boolean _chasingHomeBase;
     private Vector3 _homePosition;
     private float _lastAttackTime;
+    private float _lastAIUpdateTime;
 
     private TroopManager.AIMode CurrentMode => TroopManager.Instance?.CurrentMode ?? TroopManager.AIMode.Defend;
 
     private void Awake()
     {
         _troop = GetComponent<Troop>();
+        _networkAnimator = GetComponent<NetworkAnimator>();
     }
 
     public override void OnNetworkSpawn()
@@ -76,6 +85,30 @@ public class TroopController : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (_troop.IsDead) return;
+        if (navAgent.remainingDistance == 0f)
+        {
+            navAgent.ResetPath();
+            _networkAnimator.Animator.SetBool(Walk, false);
+            _networkAnimator.Animator.SetBool(Run, false);
+        }
+        else
+        {
+            switch (currentState)
+            {
+                case AIState.Idle:
+                    _networkAnimator.Animator.SetBool(Walk, true);
+                    _networkAnimator.Animator.SetBool(Run, false);
+                    break;
+                case AIState.Chasing:
+                case AIState.Retreating:
+                    _networkAnimator.Animator.SetBool(Walk, false);
+                    _networkAnimator.Animator.SetBool(Run, true);
+                    break;
+            }
+        }
+
+        if (Time.time - _lastAIUpdateTime < updateInterval) return;
+        _lastAIUpdateTime = Time.time;
         switch (currentState)
         {
             case AIState.Idle:
@@ -97,14 +130,23 @@ public class TroopController : NetworkBehaviour
     {
         ClearEnemy(false);
         currentState = AIState.Retreating;
+        navAgent.enabled = true;
+        navAgent.isStopped = false;
+        _networkAnimator.ResetTrigger(Attack);
+        _networkAnimator.Animator.SetBool(Run, true);
         navAgent.SetDestination(_homePosition);
     }
 
     private void HandleRetreating()
     {
-        if (navAgent.remainingDistance < 0.5f)
+        if (navAgent.remainingDistance < 0.15f)
         {
             StopRetreating();
+        }
+
+        if (CurrentMode == TroopManager.AIMode.Attack)
+        {
+            DetectEnemies();
         }
     }
 
@@ -130,11 +172,14 @@ public class TroopController : NetworkBehaviour
     private void HandleIdleDefense()
     {
         // Patrol around home position
+        _networkAnimator.Animator.SetBool(Walk, true);
         if (navAgent.remainingDistance < 0.25f)
         {
             Vector3 randomPoint = _homePosition + Random.insideUnitSphere * defenseRadius;
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
                 navAgent.SetDestination(hit.position);
+            }
         }
 
         DetectEnemies();
@@ -149,50 +194,62 @@ public class TroopController : NetworkBehaviour
     {
         currentState = AIState.Chasing;
         navAgent.isStopped = false;
+        _networkAnimator.Animator.SetBool(Walk, false);
+        _networkAnimator.Animator.SetBool(Run, true);
     }
 
     private void HandleChasing()
     {
         if (_currentTarget is null)
         {
+            Debug.Log("No target, stopping chase");
             StopChasing();
             return;
         }
 
         float sqrDistance = Vector3.SqrMagnitude(transform.position - _currentTarget.transform.position);
-        if (!_chasingHomeBase && sqrDistance > Math.Pow(detectionRange, 2))
+        switch (CurrentMode)
         {
-            ClearEnemy(false);
-            return;
+            case TroopManager.AIMode.Defend:
+                float sqrDistanceToHome = Vector3.SqrMagnitude(transform.position - _homePosition);
+                if (sqrDistanceToHome >= Math.Pow(defenseRadius, 2))
+                {
+                    ClearEnemy(false);
+                    return;
+                }
+
+                break;
+            case TroopManager.AIMode.Attack:
+                if (!_chasingHomeBase && sqrDistance > Math.Pow(detectionRange, 2))
+                {
+                    ClearEnemy(false);
+                    return;
+                }
+
+                break;
         }
 
-        if (CurrentMode == TroopManager.AIMode.Defend)
+        SetClosestDestination(_currentTarget.transform.position);
+        if (sqrDistance <= Math.Pow(_troop.AttackRange, 2))
         {
-            float sqrDistanceToHome = Vector3.SqrMagnitude(transform.position - _homePosition);
-            if (sqrDistanceToHome > Math.Pow(defenseRadius, 2))
-            {
-                ClearEnemy(false);
-                return;
-            }
-        }
-
-        if (sqrDistance <= _troop.AttackRange)
-        {
+            Debug.Log("Attacking enemy");
             StartAttacking();
             return;
         }
 
-        SetClosestDestination(_currentTarget.transform.position);
         DetectEnemies();
     }
 
     private void StopChasing()
     {
         currentState = AIState.Idle;
+        _networkAnimator.Animator.SetBool(Run, false);
     }
 
     private void StartAttacking()
     {
+        _networkAnimator.Animator.SetBool(Run, false);
+        _networkAnimator.Animator.SetBool(Walk, false);
         currentState = AIState.Attacking;
         navAgent.isStopped = true;
     }
@@ -208,11 +265,14 @@ public class TroopController : NetworkBehaviour
         float sqrDistance = Vector3.SqrMagnitude(transform.position - _currentTarget.transform.position);
         if (sqrDistance > Math.Pow(_troop.AttackRange, 2))
         {
+            Debug.Log("OUT OF RANGE, CHASING");
             StartChasing();
             return;
         }
 
         AttackEnemy(_currentTarget);
+        // SetClosestDestination(_currentTarget?.transform.position, _troop.AttackRange);
+        // navAgent.isStopped = true;
         DetectEnemies();
     }
 
@@ -229,7 +289,6 @@ public class TroopController : NetworkBehaviour
 
     private void DetectEnemies()
     {
-        _currentTarget = null;
         int count = Physics.OverlapSphereNonAlloc(
             transform.position,
             detectionRange,
@@ -247,7 +306,7 @@ public class TroopController : NetworkBehaviour
 
         if (CurrentMode == TroopManager.AIMode.Attack)
         {
-            HomeBase enemyBase = GameManager.Instance.GetEnemyBase(OwnerClientId);
+            HomeBase enemyBase = GameManager.Instance.GetEnemyBase();
             if (enemyBase.TryGetComponent<Health>(out Health enemyBaseHealth)
                 && enemyBaseHealth.health.Value > 0)
                 SetEnemy(enemyBaseHealth);
@@ -262,6 +321,7 @@ public class TroopController : NetworkBehaviour
         // Deal damage if cooldown has passed
         if (Time.time - _lastAttackTime >= _troop.AttackCooldown)
         {
+            _networkAnimator.SetTrigger(Attack);
             enemy.TakeDamageServerRpc(_troop.AttackDamage);
             _lastAttackTime = Time.time;
         }
@@ -276,22 +336,28 @@ public class TroopController : NetworkBehaviour
         }
     }
 
-    private void SetClosestDestination(Vector3 targetPoint, float maxDistance = 2f)
+    private void SetClosestDestination(Vector3? targetPoint, float maxDistance = 2f)
     {
-        if (NavMesh.SamplePosition(targetPoint, out NavMeshHit hit, maxDistance, NavMesh.AllAreas))
+        if (targetPoint is null) return;
+        if (NavMesh.SamplePosition((Vector3)targetPoint, out NavMeshHit hit, maxDistance, NavMesh.AllAreas))
             navAgent.SetDestination(hit.position);
     }
 
     private void SetEnemy(Health enemy)
     {
+        if (_currentTarget == enemy) return;
         _currentTarget = enemy;
         if (enemy.TryGetComponent<HomeBase>(out _))
         {
             _chasingHomeBase = true;
         }
+        else
+        {
+            _chasingHomeBase = false;
+        }
 
-        StartChasing();
         enemy.onDeath += ClearEnemy;
+        if (currentState != AIState.Attacking) StartChasing();
     }
 
     private void ClearEnemy(Boolean isDead)

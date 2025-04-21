@@ -95,7 +95,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public HomeBase GetEnemyBase(ulong ownerClientId)
+    public HomeBase GetEnemyBase()
     {
         return team switch
         {
@@ -116,5 +116,15 @@ public class GameManager : NetworkBehaviour
     {
         _losingTeam = homeBase.team;
         currentGameState.Value = GameState.GameOver;
+    }
+
+    public Team GetEnemyTeam()
+    {
+        return team switch
+        {
+            Team.Red => Team.Blue,
+            Team.Blue => Team.Red,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }
