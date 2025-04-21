@@ -85,7 +85,7 @@ public class Troop : NetworkBehaviour
         Animator animator = GetComponent<Animator>();
         animator.SetBool("Run", false);
         animator.SetBool("Walk", false);
-        GetComponent<NetworkAnimator>().ResetTrigger("Attack 0");
+        GetComponent<NetworkAnimator>().ResetTrigger("Attack");
         animator.SetBool(Death, true);
         // Remove from list of troops
         TroopManager.Instance.OnTroopDeath(this);

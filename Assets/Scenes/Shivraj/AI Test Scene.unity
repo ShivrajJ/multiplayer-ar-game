@@ -349,7 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   availableTroops:
-  - {fileID: 11400000, guid: 65b73d2a9412e7055b766c378afdb555, type: 2}
+  - {fileID: 11400000, guid: d75afdc686f2b9846b25964e407e3e77, type: 2}
   currentMode: 0
   troops: []
 --- !u!1001 &1084068168

@@ -9,7 +9,7 @@ public class TroopController : NetworkBehaviour
 {
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int Walk = Animator.StringToHash("Walk");
-    private static readonly int Attack = Animator.StringToHash("Attack 0");
+    private static readonly int Attack = Animator.StringToHash("Attack");
 
     public enum AIState
     {
