@@ -3,7 +3,10 @@ using Unity.Netcode;
 public class HomeBase : NetworkBehaviour
 {
     public Health health;
-    public NetworkVariable<float> gold = new(100f);
+
+    public NetworkVariable<float> gold = new NetworkVariable<float>(100f, NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
     public Team team;
 
     public override void OnNetworkSpawn()

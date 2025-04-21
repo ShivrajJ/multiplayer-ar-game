@@ -18,7 +18,7 @@ public class TroopManager : NetworkBehaviour
     // List of all the available troop prefabs
     [SerializeField] private List<TroopData> availableTroops;
     [SerializeField] private AIMode currentMode;
-    private List<Troop> troops = new List<Troop>(); // Local list of player's troops
+    [SerializeField] private List<Troop> troops = new List<Troop>(); // Local list of player's troops
     private Team team => GameManager.Instance?.team ?? Team.Red;
     private Coroutine spawningCoroutine;
 
@@ -73,7 +73,7 @@ public class TroopManager : NetworkBehaviour
             NetworkManager.LocalClientId);
     }
 
-    public void SetMode(TroopManager.AIMode mode)
+    public void SetMode(AIMode mode)
     {
         CurrentMode = mode;
     }
@@ -95,26 +95,12 @@ public class TroopManager : NetworkBehaviour
         if (GameManager.Instance.HomeBases[clientTeam].gold.Value >= troopData.price)
         {
             GameManager.Instance.HomeBases[clientTeam].gold.Value -= troopData.price;
-            ClientRpcParams clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new[] { clientId }
-                }
-            };
             Debug.Log("Starting spawn for troop: " + troopData.prefab.name);
-            StartSpawningTroopClientRpc(troopIndex, position, rotation, clientRpcParams);
+            StartCoroutine(TroopSpawnWaitCoroutine(troopIndex, position, rotation, clientId));
         }
     }
 
-    [ClientRpc(RequireOwnership = false)]
-    private void StartSpawningTroopClientRpc(int troopIndex, Vector3 position, Quaternion rotation,
-        ClientRpcParams clientRpcParams)
-    {
-        spawningCoroutine = StartCoroutine(TroopSpawnWaitCoroutine(troopIndex, position, rotation));
-    }
-
-    private IEnumerator TroopSpawnWaitCoroutine(int troopIndex, Vector3 position, Quaternion rotation)
+    private IEnumerator TroopSpawnWaitCoroutine(int troopIndex, Vector3 position, Quaternion rotation, ulong clientId)
     {
         float waitTime = availableTroops[troopIndex].spawnTime;
         float startTime = Time.time;
@@ -126,15 +112,7 @@ public class TroopManager : NetworkBehaviour
         }
 
         Debug.Log("Starting spawn...");
-        SpawnTroopServerRpc(troopIndex, team, position, rotation, NetworkManager.LocalClientId);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SpawnTroopServerRpc(int troopIndex, Team clientTeam, Vector3 position, Quaternion rotation,
-        ulong clientId)
-    {
-        Debug.Log("Spawning troop...");
-        SpawnTroop(troopIndex, clientTeam, position, rotation, clientId);
+        SpawnTroop(troopIndex, team, position, rotation, clientId);
     }
 
     private void SpawnTroop(int troopIndex, Team clientTeam, Vector3 position, Quaternion rotation, ulong clientId)
@@ -152,12 +130,15 @@ public class TroopManager : NetworkBehaviour
         // troop.Data = troopData; // Automatically set by setting index
         NetworkObject newTroopNetworkObject = newTroop.GetComponent<NetworkObject>();
         newTroopNetworkObject.SpawnWithOwnership(clientId);
-        // Add the new troop to the list of troops
-        troops.Add(troop);
     }
 
     public void OnTroopDeath(Troop troop)
     {
         troops.Remove(troop);
+    }
+
+    public void AddTroop(Troop troop)
+    {
+        troops.Add(troop);
     }
 }
