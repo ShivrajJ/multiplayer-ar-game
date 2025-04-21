@@ -68,6 +68,10 @@ public class Troop : NetworkBehaviour
             team = GameManager.Instance.team;
             TroopManager.Instance.AddTroop(this);
         }
+        else
+        {
+            team = GameManager.Instance.GetEnemyTeam();
+        }
     }
 
     private void OnDeath(bool obj)

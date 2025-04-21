@@ -306,7 +306,7 @@ public class TroopController : NetworkBehaviour
 
         if (CurrentMode == TroopManager.AIMode.Attack)
         {
-            HomeBase enemyBase = GameManager.Instance.GetEnemyBase(OwnerClientId);
+            HomeBase enemyBase = GameManager.Instance.GetEnemyBase();
             if (enemyBase.TryGetComponent<Health>(out Health enemyBaseHealth)
                 && enemyBaseHealth.health.Value > 0)
                 SetEnemy(enemyBaseHealth);
