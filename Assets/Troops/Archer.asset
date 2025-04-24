@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6ae677d1044604fa0fd6b72763f52f, type: 3}
   m_Name: Archer
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 7388822144124034973, guid: c9fc67682e20d3845a94f262c7e2a111, type: 3}
   troopName: Archer
   prefab: {fileID: 3148466905035484718, guid: f14b95752e0596eaba36ef8cc918a4df, type: 3}
   price: 0

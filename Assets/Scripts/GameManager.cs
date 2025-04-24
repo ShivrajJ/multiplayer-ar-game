@@ -127,4 +127,9 @@ public class GameManager : NetworkBehaviour
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+
+    public Transform GetBaseTransform()
+    {
+        return HomeBases[team].transform;
+    }
 }

@@ -1,4 +1,6 @@
+using System;
 using Unity.Netcode;
+using UnityEngine;
 
 public class HomeBase : NetworkBehaviour
 {
@@ -22,5 +24,10 @@ public class HomeBase : NetworkBehaviour
         {
             GameManager.Instance.OnHomeBaseDeath(this);
         }
+    }
+
+    public void UpgradeBase()
+    {
+        Debug.Log("Upgrade Base");
     }
 }
