@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 [RequireComponent(typeof(TroopController))]
 public class Troop : NetworkBehaviour
 {
+    private static readonly int Death = Animator.StringToHash("Death");
     private int _dataIndex;
 
     public int DataIndex
@@ -44,7 +46,7 @@ public class Troop : NetworkBehaviour
     [Header("Properties")] public Health health;
     public Team team;
 
-    public Boolean IsDead => health.IsDead;
+    public Boolean IsDead => health.isDead;
     private TroopController _controller;
     private TroopData _data;
 
@@ -64,6 +66,11 @@ public class Troop : NetworkBehaviour
         if (IsOwner)
         {
             team = GameManager.Instance.team;
+            TroopManager.Instance.AddTroop(this);
+        }
+        else
+        {
+            team = GameManager.Instance.GetEnemyTeam();
         }
     }
 
@@ -74,6 +81,12 @@ public class Troop : NetworkBehaviour
         GameManager.Instance.HomeBases[team == Team.Red ? Team.Blue : Team.Red].gold.Value +=
             Data.price * killRewardRatio;
         // Play death animation
+
+        Animator animator = GetComponent<Animator>();
+        animator.SetBool("Run", false);
+        animator.SetBool("Walk", false);
+        GetComponent<NetworkAnimator>().ResetTrigger("Attack");
+        animator.SetBool(Death, true);
         // Remove from list of troops
         TroopManager.Instance.OnTroopDeath(this);
         // Start Coroutine to destroy the troop

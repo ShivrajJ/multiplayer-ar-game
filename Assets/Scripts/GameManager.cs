@@ -2,7 +2,12 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class GameManager : NetworkBehaviour
 {
@@ -17,6 +22,11 @@ public class GameManager : NetworkBehaviour
     private float _timeSinceLastIncome;
     private float _incomeTimeSeconds = 2f;
 
+    [Header("UI References")]
+    [SerializeField] private UIDocument gameUI;
+    [SerializeField] private GameObject victoryUIObject;
+    [SerializeField] private GameObject defeatUIObject;
+
     private void Awake()
     {
         if (Instance is null)
@@ -29,6 +39,7 @@ public class GameManager : NetworkBehaviour
         }
 
         HomeBases = new Dictionary<Team, HomeBase>();
+        gameUI ??= FindAnyObjectByType<UIDocument>(FindObjectsInactive.Exclude);
         // planeManager = FindObjectsByType<ARPlaneManager>(FindObjectsSortMode.None)[0];
     }
 
@@ -61,6 +72,10 @@ public class GameManager : NetworkBehaviour
                 break;
             case GameState.GameOver:
                 // Show Game Over screen, show "victory" and "defeat" text
+                if (IsServer) EndGameClientRpc(_losingTeam);
+                
+                Time.timeScale = 0;
+                // Stop everything
                 break;
         }
     }
@@ -85,7 +100,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public HomeBase GetEnemyBase(ulong ownerClientId)
+    public HomeBase GetEnemyBase()
     {
         return team switch
         {
@@ -129,5 +144,45 @@ public class GameManager : NetworkBehaviour
 
         redBase.gold.Value += redBase.income.Value;
         blueBase.gold.Value += blueBase.income.Value;
+    }
+
+    public Team GetEnemyTeam()
+    {
+        return team switch
+        {
+            Team.Red => Team.Blue,
+            Team.Blue => Team.Red,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    public Transform GetBaseTransform()
+    {
+        return HomeBases[team].transform;
+    }
+
+    [ClientRpc(RequireOwnership = false)]
+    private void EndGameClientRpc(Team losingTeam)
+    {
+        if (team == losingTeam)
+        {
+            ShowGameOverScreen();
+        }
+        else
+        {
+            ShowVictoryScreen();
+        }
+    }
+    
+    private void ShowVictoryScreen()
+    {
+        gameUI.gameObject.SetActive(false);
+        victoryUIObject.SetActive(true);
+    }
+
+    private void ShowGameOverScreen()
+    {
+        gameUI.gameObject.SetActive(false);
+        defeatUIObject.SetActive(true);
     }
 }
