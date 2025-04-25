@@ -11,6 +11,13 @@ using Vector3 = UnityEngine.Vector3;
 
 public class GameManager : NetworkBehaviour
 {
+    public enum GameState
+    {
+        WaitingForPlayers,
+        InProgress,
+        GameOver
+    }
+    
     public static GameManager Instance;
     public GameObject homeBasePrefab;
     public ARPlaneManager planeManager;
@@ -18,9 +25,8 @@ public class GameManager : NetworkBehaviour
     public Dictionary<Team, HomeBase> HomeBases;
     public NetworkVariable<float> universalScale = new NetworkVariable<float>(0.3f);
     public Team team;
+    public float incomeTimeSeconds = 2f;
     private Team _losingTeam;
-    private float _timeSinceLastIncome;
-    private float _incomeTimeSeconds = 2f;
 
     [Header("UI References")]
     [SerializeField] private UIDocument gameUI;
@@ -110,40 +116,10 @@ public class GameManager : NetworkBehaviour
         };
     }
 
-    public enum GameState
-    {
-        WaitingForPlayers,
-        InProgress,
-        GameOver
-    }
-
     public void OnHomeBaseDeath(HomeBase homeBase)
     {
         _losingTeam = homeBase.team;
         currentGameState.Value = GameState.GameOver;
-    }
-
-    private void Update()
-    {
-        if (!IsServer) return;
-        if (currentGameState.Value == GameState.InProgress)
-        {
-            _timeSinceLastIncome += Time.deltaTime;
-            if (_timeSinceLastIncome >= _incomeTimeSeconds)
-            {
-                AddCoins();
-                _timeSinceLastIncome = 0f;
-            }
-        }
-    }
-
-    private void AddCoins()
-    {
-        HomeBase redBase = HomeBases[Team.Red];
-        HomeBase blueBase = HomeBases[Team.Blue];
-
-        redBase.gold.Value += redBase.income.Value;
-        blueBase.gold.Value += blueBase.income.Value;
     }
 
     public Team GetEnemyTeam()

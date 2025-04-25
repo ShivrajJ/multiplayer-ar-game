@@ -14,7 +14,7 @@ public class GameUIEvents : MonoBehaviour
     private Button _attackButton;
     private ScrollView _scrollView;
 
-    void OnEnable()
+    private void OnEnable()
     {
         PopulateUIReferences();
         PopulateTopButtons();

@@ -15,5 +15,5 @@ MonoBehaviour:
   icon: {fileID: 7388822144124034973, guid: a6e7a1d69fe6dac4a87b413fd4427215, type: 3}
   troopName: Mutant
   prefab: {fileID: 1302004142049790358, guid: 83df6261f5aae022b84207b5e166e40e, type: 3}
-  price: 0
+  price: 200
   spawnTime: 2
