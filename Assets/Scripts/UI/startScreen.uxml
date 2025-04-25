@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/startScreen.uss?fileID=7433441132597879392&amp;guid=54760b6681bac3f4bb378089704e910e&amp;type=3#startScreen" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgb(45, 45, 69); align-items: center; justify-content: space-between; align-self: center; width: 100%;">
+        <ui:VisualElement style="width: 100%; height: auto; align-items: auto; justify-content: flex-start; padding-top: 10%; padding-bottom: 10%; align-self: center; padding-right: 0; padding-left: 0; margin-top: 10%;">
+            <ui:Label text="CASTLE CRASHERS" style="font-size: 75%; -unity-font-style: bold; color: rgb(255, 215, 0); margin-top: 0; -unity-text-align: middle-center; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: center;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; width: 100%; align-self: center; justify-content: space-around; align-items: center;">
+            <ui:Image style="width: 512px; height: 512px; background-image: url(&quot;project://database/Assets/Scripts/UI/cartoon-sword.jpg?fileID=2800000&amp;guid=344bf28b594d87140a8cf51a5479576d&amp;type=3#cartoon-sword&quot;); -unity-background-scale-mode: scale-to-fit; margin: 20px 0; background-size: contain; max-height: initial; max-width: initial; min-width: 200px; min-height: 200px;" />
+            <ui:VisualElement name="buttons-div" style="width: 100%; flex-direction: column; align-items: center; margin-bottom: 50px;">
+                <ui:Button name="host-button" class="start-screen-button">
+                    <ui:Label text="START HOST" class="start-screen-button-text" />
+                </ui:Button>
+                <ui:Button name="client-button" class="start-screen-button">
+                    <ui:Label text="START CLIENT" class="start-screen-button-text" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

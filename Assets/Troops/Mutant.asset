@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6ae677d1044604fa0fd6b72763f52f, type: 3}
   m_Name: Mutant
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 7388822144124034973, guid: a6e7a1d69fe6dac4a87b413fd4427215, type: 3}
   troopName: Mutant
   prefab: {fileID: 1302004142049790358, guid: 83df6261f5aae022b84207b5e166e40e, type: 3}
   price: 0

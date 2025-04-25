@@ -56,6 +56,11 @@ public class TroopManager : NetworkBehaviour
     }
 
     // Spawn Troop
+    public void SpawnTroop(int troopIndex)
+    {
+        SpawnTroop(troopIndex, GameManager.Instance.GetBaseTransform());
+    }
+    
     public void SpawnTroop(int troopIndex, Transform homeBaseTransform)
     {
         if (!IsClient) return;

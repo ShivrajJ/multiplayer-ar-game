@@ -42,11 +42,6 @@ public class Boot : MonoBehaviour
         networkDetailsPanel.GetComponentInChildren<TMP_Text>().SetText("CLIENT");
     }
 
-    public void StartConnection()
-    {
-        StartConnection(connectionType);
-    }
-
     public void SetIPAddress(String newIPAddress)
     {
         ipAddress = newIPAddress;
@@ -84,7 +79,7 @@ public class Boot : MonoBehaviour
     }
 #endif
 
-    private void StartConnection(ConnectionType connType)
+    public void StartConnection(ConnectionType connType)
     {
         NetworkManager.Singleton.GetComponent<UnityTransport>()
             .SetConnectionData(ipAddress, ushort.Parse(port), "0.0.0.0");

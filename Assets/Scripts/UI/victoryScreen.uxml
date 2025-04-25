@@ -1,0 +1,5 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement style="flex-grow: 1; width: 100%; height: 100%; align-items: center; align-self: auto; justify-content: center; align-content: center;">
+        <engine:VisualElement name="victory-image" style="flex-grow: 0; width: 1024px; height: 1024px; flex-shrink: 0; align-self: center; background-image: url(&quot;project://database/Assets/Graphics/UI/VICTORY.png?fileID=2800000&amp;guid=188b26effec0d3d44a1aacd7b2ff0068&amp;type=3#VICTORY&quot;);" />
+    </engine:VisualElement>
+</engine:UXML>

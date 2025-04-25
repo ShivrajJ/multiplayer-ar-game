@@ -167,7 +167,7 @@ MonoBehaviour:
     OriginatingState: -957241088
     DestinationState: 1747747204
     TransitionDuration: 0.25
-    TriggerNameHash: 1923059754
+    TriggerNameHash: 1080829965
     TransitionIndex: 2
   m_Animator: {fileID: 5665181394207450691}
 --- !u!114 &5582208379597114224
@@ -265,6 +265,7 @@ MonoBehaviour:
     m_InternalValue: 100
   maxHealth:
     m_InternalValue: 100
+  isDead: 0
 --- !u!195 &392161507708136173
 NavMeshAgent:
   m_ObjectHideFlags: 0
