@@ -32,6 +32,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private UIDocument gameUI;
     [SerializeField] private GameObject victoryUIObject;
     [SerializeField] private GameObject defeatUIObject;
+    
+    public GameObject GameUIGameObject => gameUI.gameObject;
 
     private void Awake()
     {

@@ -153,9 +153,18 @@ MonoBehaviour:
   health: {fileID: 3995759082661697809}
   gold:
     m_InternalValue: 100
-  income:
-    m_InternalValue: 10
   team: 0
+  upgradesData: {fileID: 11400000, guid: d09b3ae42cb75aa4ca5d48ee8edcccbd, type: 2}
+  upgrades:
+    rid: 4308790937551110227
+  upgradeIndex:
+    m_InternalValue: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 4308790937551110227
+      type: {class: 'NetworkList`1[[HomeBase/Upgrade, Assembly-CSharp]]', ns: Unity.Netcode, asm: Unity.Netcode.Runtime}
+      data: 
 --- !u!114 &3995759082661697809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +182,7 @@ MonoBehaviour:
     m_InternalValue: 100
   maxHealth:
     m_InternalValue: 100
+  isDead: 0
 --- !u!208 &-5973282488541201858
 NavMeshObstacle:
   m_ObjectHideFlags: 0
