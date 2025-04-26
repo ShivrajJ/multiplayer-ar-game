@@ -11,6 +11,13 @@ using Vector3 = UnityEngine.Vector3;
 
 public class GameManager : NetworkBehaviour
 {
+    public enum GameState
+    {
+        WaitingForPlayers,
+        InProgress,
+        GameOver
+    }
+    
     public static GameManager Instance;
     public GameObject homeBasePrefab;
     public ARPlaneManager planeManager;
@@ -18,12 +25,15 @@ public class GameManager : NetworkBehaviour
     public Dictionary<Team, HomeBase> HomeBases;
     public NetworkVariable<float> universalScale = new NetworkVariable<float>(0.3f);
     public Team team;
+    public float incomeTimeSeconds = 2f;
     private Team _losingTeam;
 
     [Header("UI References")]
     [SerializeField] private UIDocument gameUI;
     [SerializeField] private GameObject victoryUIObject;
     [SerializeField] private GameObject defeatUIObject;
+    
+    public GameObject GameUIGameObject => gameUI.gameObject;
 
     private void Awake()
     {
@@ -67,14 +77,6 @@ public class GameManager : NetworkBehaviour
                 break;
             case GameState.InProgress:
                 TroopManager.Instance.SpawnTroop(0, HomeBases[team].transform);
-                // Enable plane detection
-                // planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
-                // WRAP IN COROUTINE (so it can be done over time)
-                // find first plane
-                // Spawn Home Bases
-                // Disable plane detection
-                // planeManager.requestedDetectionMode = PlaneDetectionMode.None;
-                // END COROUTINE
                 break;
             case GameState.GameOver:
                 // Show Game Over screen, show "victory" and "defeat" text
@@ -114,13 +116,6 @@ public class GameManager : NetworkBehaviour
             Team.Blue => HomeBases[Team.Red],
             _ => throw new ArgumentOutOfRangeException()
         };
-    }
-
-    public enum GameState
-    {
-        WaitingForPlayers,
-        InProgress,
-        GameOver
     }
 
     public void OnHomeBaseDeath(HomeBase homeBase)

@@ -15,5 +15,5 @@ MonoBehaviour:
   icon: {fileID: 7388822144124034973, guid: 4672fdcf145872345b2e3bc4f7f91969, type: 3}
   troopName: Soldier
   prefab: {fileID: 5358586299849280847, guid: 781fa295a8aa5d44699358677f1edffa, type: 3}
-  price: 0
+  price: 50
   spawnTime: 1

@@ -15,5 +15,5 @@ MonoBehaviour:
   icon: {fileID: 7388822144124034973, guid: c9fc67682e20d3845a94f262c7e2a111, type: 3}
   troopName: Archer
   prefab: {fileID: 3148466905035484718, guid: f14b95752e0596eaba36ef8cc918a4df, type: 3}
-  price: 0
+  price: 70
   spawnTime: 1
