@@ -54,11 +54,21 @@ public class HomeBase : NetworkBehaviour
         base.OnNetworkSpawn();
         health.onDeath += OnDeath;
         upgradeIndex.OnValueChanged += UpdateIncome;
-        GameManager.Instance.RegisterHomeBase(this);
         if (IsOwner)
         {
+            team = IsHost ? Team.Red : Team.Blue;
+            Map map = FindAnyObjectByType<Map>();
+            Transform homeBasePoint = team == Team.Red ? map.redHomeBasePoint : map.blueHomeBasePoint;
+            NetworkObjectParenting networkObjectParenting = GetComponent<NetworkObjectParenting>();
+            networkObjectParenting.TryParentAndPosition(homeBasePoint.localPosition, homeBasePoint.localRotation);
             InitializeUI();
         }
+        else
+        {
+            team = IsHost ? Team.Blue : Team.Red;
+        }
+
+        GameManager.Instance.RegisterHomeBase(this);
         if (IsServer)
         {
             foreach (Upgrade upgrade in upgradesData.upgrades)
@@ -137,7 +147,7 @@ public class HomeBase : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) return;
-        if (GameManager.Instance.currentGameState.Value == GameManager.GameState.InProgress)
+        if (GameManager.Instance.NetworkGameState == GameState.Gameplay)
         {
             _timeSinceLastIncome += Time.deltaTime;
             if (_timeSinceLastIncome >= GameManager.Instance.incomeTimeSeconds)

@@ -50,11 +50,10 @@ public class TroopController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        _homePosition = transform.position;
         if (IsOwner)
         {
+            _homePosition = GameManager.Instance.HomeBases[GameManager.Instance.localTeam].transform.position;
             InitializeAI();
-            navAgent.enabled = true;
             _troop.health.onDeath += OnDeath;
         }
     }
@@ -85,6 +84,10 @@ public class TroopController : NetworkBehaviour
     {
         if (!IsOwner) return;
         if (_troop.IsDead) return;
+        if (!navAgent.isOnNavMesh)
+        {
+            
+        }
         if (navAgent.remainingDistance == 0f)
         {
             navAgent.ResetPath();
