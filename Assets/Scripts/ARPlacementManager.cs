@@ -216,6 +216,7 @@ public class ARPlacementManager : MonoBehaviour
     {
         Debug.Log("ARPlacementManager: Enabling placement.");
         isPlacementEnabled = true;
+        EnhancedTouchSupport.Enable();
         Touch.onFingerDown += PlaceMap;
         mapHasBeenPlaced = false; // Reset placement status if re-enabled
 
@@ -228,6 +229,8 @@ public class ARPlacementManager : MonoBehaviour
     {
         Debug.Log("ARPlacementManager: Disabling placement.");
         isPlacementEnabled = false;
+        EnhancedTouchSupport.Disable();
+        Touch.onFingerDown -= PlaceMap;
 
         // Disable plane detection visuals (optional, saves performance)
         SetPlaneDetection(false);
