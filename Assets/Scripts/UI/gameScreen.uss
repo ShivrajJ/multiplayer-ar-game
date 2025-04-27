@@ -73,3 +73,30 @@
     justify-content: center;
     align-items: center;
 }
+
+.health-bar {
+    width: 80%;
+    -unity-background-image-tint-color: rgb(255, 0, 0);
+    color: rgb(255, 255, 255);
+    background-color: rgb(111, 52, 52);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.unity-progress-bar__progress {
+    background-color: rgb(255, 0, 0);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.unity-progress-bar__background {
+    background-color: rgb(226, 203, 205);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
