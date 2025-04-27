@@ -159,6 +159,7 @@ public class ARPlacementManager : MonoBehaviour
         }
 
         Vector3 forwardFlat = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up);
+        if (!NetworkManager.Singleton.IsHost) forwardFlat *= -1; 
         Quaternion rotation = Quaternion.LookRotation(forwardFlat, parentTransform.up);
 
         // Instantiate the map locally (NOT networked)
