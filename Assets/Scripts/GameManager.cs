@@ -9,6 +9,7 @@ using UnityEngine.XR.ARSubsystems;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 using System.Linq;
+using Unity.XR.CoreUtils;
 
 // Enum defining the different states of the game
 public enum GameState
@@ -27,6 +28,10 @@ public enum GameState
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance;
+    [Header("Game Settings")]
+    public float incomeTimeSeconds = 2f;
+    public NetworkVariable<float> universalScale = new NetworkVariable<float>(0.3f);
+    
     [Header("Network Prefabs")] [SerializeField]
     private GameObject playerPrefab; // Prefab for the player character 
 
@@ -36,20 +41,19 @@ public class GameManager : NetworkBehaviour
     private ARPlacementManager arPlacementManager; // Reference to the placement manager script
 
     // --- State Management ---
-    // NetworkVariable to synchronize the current game state across all clients
     [SerializeField] private NetworkVariable<GameState> networkGameState = new NetworkVariable<GameState>(
         GameState.Initializing, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public NetworkVariable<NetworkObjectReference> networkAnchorReference;
-    public NetworkObject NetworkAnchorObject { get; set; }
 
     public Dictionary<Team, HomeBase> HomeBases;
-    public NetworkVariable<float> universalScale = new NetworkVariable<float>(0.3f);
+    public NetworkObject NetworkAnchorObject { get; set; }
     public Team localTeam;
     private Team _losingTeam;
     // Local (non-networked) state for UI/logic specific to this client
     [SerializeField] private GameState _localGameState = GameState.Initializing;
-    public GameState LocalGameState => _localGameState; // Public getter for local state
+    public GameState NetworkGameState => networkGameState.Value;
+    public GameState LocalGameState => _localGameState;
 
     // --- Player Management ---
     // Dictionary to track player states (server-side)
@@ -153,8 +157,8 @@ public class GameManager : NetworkBehaviour
         if (newAnchor.TryGet(out var networkObject))
         {
             NetworkAnchorObject = networkObject;
-            NetworkAnchorObject.transform.position = LocalMapAnchor.transform.position;
-            NetworkAnchorObject.transform.rotation = LocalMapAnchor.transform.rotation;
+            NetworkAnchorObject.transform.position = LocalMapAnchor.position;
+            NetworkAnchorObject.transform.rotation = LocalMapAnchor.rotation;
             Debug.Log($"Network Anchor Object registered: {NetworkAnchorObject.name}");
         }
         else
@@ -306,7 +310,13 @@ public class GameManager : NetworkBehaviour
     private void CheckAllReady()
     {
         if (!IsServer) return;
-        if (HomeBases.Count < 2) return;
+        if (HomeBases.Count < 2)
+        {
+            InvokeRepeating(nameof(CheckAllReady), 0.2f, 0.2f);
+            return;
+        }
+
+        CancelInvoke(nameof(CheckAllReady));
 
         RequestGameStateChangeServerRpc(GameState.Gameplay);
     }

@@ -59,18 +59,16 @@ public class HomeBase : NetworkBehaviour
             team = IsHost ? Team.Red : Team.Blue;
             Map map = FindAnyObjectByType<Map>();
             Transform homeBasePoint = team == Team.Red ? map.redHomeBasePoint : map.blueHomeBasePoint;
-            transform.localPosition = homeBasePoint.position;
-            transform.localRotation = homeBasePoint.rotation;
-            GetComponent<NetworkObjectParenting>()
-                .SetInitialPoseServerRpc(transform.localPosition,
-                    transform.localRotation);
+            NetworkObjectParenting networkObjectParenting = GetComponent<NetworkObjectParenting>();
+            networkObjectParenting.TryParentAndPosition(homeBasePoint.localPosition, homeBasePoint.localRotation);
+            InitializeUI();
+        }
+        else
+        {
+            team = IsHost ? Team.Blue : Team.Red;
         }
 
         GameManager.Instance.RegisterHomeBase(this);
-        if (IsOwner)
-        {
-            InitializeUI();
-        }
         if (IsServer)
         {
             foreach (Upgrade upgrade in upgradesData.upgrades)
@@ -149,7 +147,7 @@ public class HomeBase : NetworkBehaviour
     private void Update()
     {
         if (!IsServer) return;
-        if (GameManager.Instance.LocalGameState == GameManager.GameState.InProgress)
+        if (GameManager.Instance.NetworkGameState == GameState.Gameplay)
         {
             _timeSinceLastIncome += Time.deltaTime;
             if (_timeSinceLastIncome >= GameManager.Instance.incomeTimeSeconds)

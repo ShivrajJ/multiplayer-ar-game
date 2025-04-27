@@ -58,15 +58,18 @@ public class Troop : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (IsServer)
-        {
-            health.onDeath += OnDeath;
-        }
+        health.onDeath += OnDeath;
 
         if (IsOwner)
         {
             team = GameManager.Instance.localTeam;
+            transform.localScale = Vector3.one * GameManager.Instance.universalScale.Value;
             TroopManager.Instance.AddTroop(this);
+            if (TryGetComponent<NetworkObjectParenting>(out NetworkObjectParenting netObjParenting))
+            {
+                Transform baseTransform = GameManager.Instance.GetBaseTransform();
+                netObjParenting.TryParentAndPosition(baseTransform.localPosition + Vector3.forward, baseTransform.localRotation);
+            }
         }
         else
         {
@@ -76,6 +79,10 @@ public class Troop : NetworkBehaviour
 
     private void OnDeath(bool obj)
     {
+        if (IsOwner)
+        {
+            TroopManager.Instance.OnTroopDeath(this);
+        }
         if (!IsServer) return;
         // Add gold to enemy base
         GameManager.Instance.HomeBases[team == Team.Red ? Team.Blue : Team.Red].gold.Value +=
@@ -87,8 +94,6 @@ public class Troop : NetworkBehaviour
         animator.SetBool("Walk", false);
         GetComponent<NetworkAnimator>().ResetTrigger("Attack");
         animator.SetBool(Death, true);
-        // Remove from list of troops
-        TroopManager.Instance.OnTroopDeath(this);
         // Start Coroutine to destroy the troop
         StartCoroutine(DestroyTroop());
     }

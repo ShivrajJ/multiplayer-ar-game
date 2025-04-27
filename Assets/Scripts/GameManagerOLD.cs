@@ -1,31 +1,39 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using Quaternion = UnityEngine.Quaternion;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using Vector3 = UnityEngine.Vector3;
 
 public class GameManagerOLD : NetworkBehaviour
 {
+    public enum GameState
+    {
+        WaitingForPlayers,
+        InProgress,
+        GameOver
+    }
+    
     public static GameManagerOLD Instance;
-    public Transform LocalMapAnchor { get; set; }
     public GameObject homeBasePrefab;
-    public GameObject mapPrefab;
-    public ARRaycastManager raycastManager;
     public ARPlaneManager planeManager;
     public NetworkVariable<GameState> currentGameState = new NetworkVariable<GameState>(GameState.WaitingForPlayers);
     public Dictionary<Team, HomeBase> HomeBases;
     public NetworkVariable<float> universalScale = new NetworkVariable<float>(0.3f);
     public Team team;
-
+    public float incomeTimeSeconds = 2f;
     private Team _losingTeam;
-    private List<ARRaycastHit> hits = new List<ARRaycastHit>();
-    private GameObject _mapGameObject;
+
+    [Header("UI References")]
+    [SerializeField] private UIDocument gameUI;
+    [SerializeField] private GameObject victoryUIObject;
+    [SerializeField] private GameObject defeatUIObject;
+    
+    public GameObject GameUIGameObject => gameUI.gameObject;
 
     private void Awake()
     {
@@ -39,6 +47,7 @@ public class GameManagerOLD : NetworkBehaviour
         }
 
         HomeBases = new Dictionary<Team, HomeBase>();
+        gameUI ??= FindAnyObjectByType<UIDocument>(FindObjectsInactive.Exclude);
         // planeManager = FindObjectsByType<ARPlaneManager>(FindObjectsSortMode.None)[0];
     }
 
@@ -54,75 +63,29 @@ public class GameManagerOLD : NetworkBehaviour
         {
             case GameState.WaitingForPlayers:
                 // Wait for Players, show host their IP address
-                if (!IsHost)
+                if (IsHost)
                 {
+                    team = Team.Red;
+                    RegisterHomeBaseServerRpc(team, NetworkManager.Singleton.LocalClientId);
+                }
+                else
+                {
+                    team = Team.Blue;
+                    RegisterHomeBaseServerRpc(team, NetworkManager.Singleton.LocalClientId);
                 }
 
-                String ipAddress = GetLocalIPv4();
-                Debug.Log($"Host IP Address: {ipAddress}");
-                // Show IP address to host
-                // Show "Waiting for players" screen
-                // if (IsHost)
-                // {
-                //     team = Team.Red;
-                //     RegisterHomeBaseServerRpc(team, NetworkManager.Singleton.LocalClientId);
-                // }
-                // else
-                // {
-                //     team = Team.Blue;
-                //     RegisterHomeBaseServerRpc(team, NetworkManager.Singleton.LocalClientId);
-                // }
-
-                break;
-            case GameState.PlacingHomeBase:
-                planeManager.enabled = true;
-                TouchSimulation.Enable();
-                EnhancedTouchSupport.Enable();
-                Touch.onFingerDown += PlaceDownHomeBaseOnPlane;
-                // Show "Place your home base" screen
-                // Show AR planes
                 break;
             case GameState.InProgress:
                 TroopManager.Instance.SpawnTroop(0, HomeBases[team].transform);
                 break;
             case GameState.GameOver:
                 // Show Game Over screen, show "victory" and "defeat" text
+                if (IsServer) EndGameClientRpc(_losingTeam);
+                
+                Time.timeScale = 0;
+                // Stop everything
                 break;
         }
-    }
-
-    private void PlaceDownHomeBaseOnPlane(Finger finger)
-    {
-        if (finger.index != 0) return;
-
-        if (raycastManager.Raycast(finger.currentTouch.screenPosition, hits, TrackableType.PlaneWithinPolygon))
-        {
-            int closestHitIndex = -1;
-            for (int hitIndex = 0; hitIndex < hits.Count; hitIndex++)
-            {
-                // If the plane is a horizontal plane facing up (ground)
-                if (planeManager.GetPlane(hits[hitIndex].trackableId).alignment == PlaneAlignment.HorizontalUp)
-                {
-                    if (closestHitIndex == -1 || hits[hitIndex].distance < hits[closestHitIndex].distance)
-                    {
-                        closestHitIndex = hitIndex;
-                    }
-                }
-            }
-
-            if (closestHitIndex != -1)
-            {
-                ARPlane plane = planeManager.GetPlane(hits[closestHitIndex].trackableId);
-                ARAnchor arAnchor = new GameObject("AR Anchor").AddComponent<ARAnchor>();
-                _mapGameObject = Instantiate(mapPrefab, plane.center, Quaternion.identity, arAnchor.transform);
-            }
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void StartGameServerRpc()
-    {
-        currentGameState.Value = GameState.PlacingHomeBase;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -145,7 +108,7 @@ public class GameManagerOLD : NetworkBehaviour
         }
     }
 
-    public HomeBase GetEnemyBase(ulong ownerClientId)
+    public HomeBase GetEnemyBase()
     {
         return team switch
         {
@@ -155,56 +118,49 @@ public class GameManagerOLD : NetworkBehaviour
         };
     }
 
-    public enum GameState
-    {
-        WaitingForPlayers,
-        PlacingHomeBase,
-        InProgress,
-        GameOver
-    }
-
     public void OnHomeBaseDeath(HomeBase homeBase)
     {
         _losingTeam = homeBase.team;
         currentGameState.Value = GameState.GameOver;
     }
 
-    private string GetLocalIPv4()
+    public Team GetEnemyTeam()
     {
-        return Dns.GetHostEntry(Dns.GetHostName())
-            .AddressList.First(
-                f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-            .ToString();
+        return team switch
+        {
+            Team.Red => Team.Blue,
+            Team.Blue => Team.Red,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
-    // #region Test
-    //
-    // public void LocalPlayerPlacedMap()
-    // {
-    //     if (currentGameState.Value != GameState.PlacingHomeBase) return; // Only relevant during placement
-    //
-    //     // Find the local player's network state script
-    //     if (NetworkManager.Singleton.LocalClient != null &&
-    //         NetworkManager.Singleton.LocalClient.PlayerObject != null &&
-    //         NetworkManager.Singleton.LocalClient.PlayerObject.TryGetComponent<PlayerNetworkState>(out var playerState))
-    //     {
-    //         Debug.Log("Local player placed map. Informing server...");
-    //         playerState.NotifyServerMapPlaced(); // Tell the server this client is ready
-    //     }
-    //     else
-    //     {
-    //         Debug.LogError("Could not find local PlayerNetworkState to notify server!");
-    //     }
-    //
-    //     // Optionally, transition local state immediately to WaitingForPlayers for quicker UI feedback
-    //     // The server will ultimately control the authoritative game state transition.
-    //     // UpdateLocalState(GameState.WaitingForPlayers); // Uncomment for immediate local feedback
-    // }
-    //
-    // #endregion
-    //
-    // public void RegisterPlayer(ulong ownerClientId, PlayerNetworkState playerNetworkState)
-    // {
-    //     if (!IsServer) return;
-    // }
+    public Transform GetBaseTransform()
+    {
+        return HomeBases[team].transform;
+    }
+
+    [ClientRpc(RequireOwnership = false)]
+    private void EndGameClientRpc(Team losingTeam)
+    {
+        if (team == losingTeam)
+        {
+            ShowGameOverScreen();
+        }
+        else
+        {
+            ShowVictoryScreen();
+        }
+    }
+    
+    private void ShowVictoryScreen()
+    {
+        gameUI.gameObject.SetActive(false);
+        victoryUIObject.SetActive(true);
+    }
+
+    private void ShowGameOverScreen()
+    {
+        gameUI.gameObject.SetActive(false);
+        defeatUIObject.SetActive(true);
+    }
 }

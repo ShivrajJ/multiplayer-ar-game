@@ -135,7 +135,7 @@ public class ARPlacementManager : MonoBehaviour
             if (closestHitIndex == -1) return;
             ARPlane plane = planeManager.GetPlane(raycastHits[closestHitIndex].trackableId);
             anchorPlane = plane;
-            InstantiateAndPlaceMap(plane.center, plane.pose.rotation, plane.transform);
+            InstantiateAndPlaceMap(plane.center, plane.transform);
         }
         else
         {
@@ -144,13 +144,22 @@ public class ARPlacementManager : MonoBehaviour
     }
 
     // Instantiates the map prefab and notifies the GameManager
-    private void InstantiateAndPlaceMap(Vector3 position, Quaternion rotation, Transform parentTransform)
+    private void InstantiateAndPlaceMap(Vector3 position, Transform parentTransform)
     {
-        if (mapPrefab == null)
+        if (mapPrefab is null)
         {
             Debug.LogError("Cannot instantiate map: Map Prefab is null!");
             return;
         }
+        Camera mainCamera = Camera.main;
+        if (mainCamera is null)
+        {
+            Debug.LogError("Main Camera not set!");
+            return;
+        }
+
+        Vector3 forwardFlat = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up);
+        Quaternion rotation = Quaternion.LookRotation(forwardFlat, parentTransform.up);
 
         // Instantiate the map locally (NOT networked)
         GameObject mapInstance = Instantiate(mapPrefab, position, rotation);
@@ -163,7 +172,7 @@ public class ARPlacementManager : MonoBehaviour
             // Store the anchor/parent transform in the GameManager for other scripts to find
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.LocalMapAnchor = parentTransform; // Store the ANCHOR transform
+                GameManager.Instance.LocalMapAnchor = mapInstance.transform; // Store the ANCHOR transform
                 Debug.Log("LocalMapAnchor reference set in GameManager.");
             }
             else Debug.LogError("GameManager instance not found to store LocalMapAnchor!");

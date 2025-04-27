@@ -95,6 +95,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f36d6f9a79c9c64fa81d231ce8dcf90, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2270700837467562306}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f36d6f9a79c9c64fa81d231ce8dcf90, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -316862416948306363}
   m_SourcePrefab: {fileID: 100100000, guid: 8f36d6f9a79c9c64fa81d231ce8dcf90, type: 3}
 --- !u!1 &1302004142049790358 stripped
 GameObject:
@@ -118,7 +121,7 @@ MonoBehaviour:
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
+  SynchronizeTransform: 0
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 1
   SpawnWithObservers: 1
@@ -274,7 +277,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1302004142049790358}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 0.65
@@ -311,3 +314,16 @@ MonoBehaviour:
     TriggerNameHash: 1080829965
     TransitionIndex: 2
   m_Animator: {fileID: 5135778050119554389}
+--- !u!114 &-316862416948306363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302004142049790358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e798b4b3df4d4f829af92de99eaa28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1

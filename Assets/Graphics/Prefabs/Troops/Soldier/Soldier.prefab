@@ -87,6 +87,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fbce4048f16e5b44299895ebdef2c01a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 298588042396509857}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fbce4048f16e5b44299895ebdef2c01a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5453957118034172800}
   m_SourcePrefab: {fileID: 100100000, guid: fbce4048f16e5b44299895ebdef2c01a, type: 3}
 --- !u!1 &5358586299849280847 stripped
 GameObject:
@@ -110,14 +113,14 @@ MonoBehaviour:
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
+  SynchronizeTransform: 0
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 1
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
+  AllowOwnerToParent: 1
 --- !u!95 &3117418329100614771
 Animator:
   serializedVersion: 7
@@ -265,7 +268,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5358586299849280847}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 1
@@ -303,3 +306,16 @@ CapsuleCollider:
   m_Height: 1.75
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &5453957118034172800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358586299849280847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e798b4b3df4d4f829af92de99eaa28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
